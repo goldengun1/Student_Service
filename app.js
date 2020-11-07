@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 // XDDDDD
 //NOVA
 //ggggggggggggg
+/kkk
 //neka izmena
 mongoose.connect("mongodb://127.0.0.1:27017/Prodavnica", {
     useNewUrlParser: true,
