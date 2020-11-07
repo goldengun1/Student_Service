@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // XDDDDD
+//NOVA
+//ggggggggggggg
 //neka izmena
 mongoose.connect("mongodb://127.0.0.1:27017/Prodavnica", {
     useNewUrlParser: true,
