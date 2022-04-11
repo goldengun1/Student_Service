@@ -1,43 +1,66 @@
-//XDDDD
+// Node.js packages
+
+// For creating paths independent of operating system
 const path = require('path');
+
+// Third-party packages
+
+// For creating expressjs applications
 const express = require('express');
-const bodyParser = require('body-parser');
+// For manipulating connexting to database
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/Prodavnica", {
+
+// Connect to database
+mongoose.connect("mongodb://127.0.0.1:27017/Fakultet", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
-const artikalRoutes = require('./routes/artikal');
-const porudzbinaRoutes = require('./routes/porudzbina');
+// Custom modules
 
+// Handles routes to /
+const indexRoutes = require('./routes/index');
+const studentRoutes = require('./routes/student');
+const examRoutes = require('./routes/exam');
+const resultsRoutes = require('./routes/results');
+
+// Global data
 const app = express();
 
+// Module implementation
+
+// Registering a template rendering engine and template directories
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-app.use(bodyParser.urlencoded({extended: false}));
+// Parsing request body
+app.use(express.urlencoded({extended: false}));
+
+// Serving public files statically
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/artikal', artikalRoutes);
-app.use('/porudzbina', porudzbinaRoutes);
+// Registering routes
+app.use('/', indexRoutes);
+app.use('/student', studentRoutes);
+app.use('/exam', examRoutes);
+app.use('/results', resultsRoutes);
 
+// Handling request for unknown path
 app.use(function (req, res, next) {
-    const err = new Error('Pokušali ste da učitate stranicu koja ne postoji: ' + req.url);
-    err.status = 404;
-
-    next(err);
+    res.status(404).render('404.ejs');
 });
 
+// Handling errors (unknown request, dynamic code errors, ...)
 app.use(function (error, req, res, next) {
     console.error(error.stack);
 
-    const statusCode = error.status || 500;
-    res.status(statusCode).render('error.ejs', {
-        errorMessage: error.message,
-        errorCode: statusCode
+    // Alternatively, send a 500 html page
+    res.status(error.status || 500).json({
+        errorMessage: error.message
     });
 });
+
+// Module exports
 
 module.exports = app;
